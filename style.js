@@ -196,7 +196,7 @@ styleCreate(hoursBar,{
 })
 let minutesBar = tagCreate("div");
 styleCreate(minutesBar,{
-  width : "10px",
+  width : "8px",
   height : "130px",
   borderRadius : "5px",
   boxShadow : "0 5px 20px rgba(0,0,0,0.21), 0 5px 5px rgba(0,0,0,0.22)",
