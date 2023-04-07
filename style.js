@@ -26,21 +26,35 @@ styleCreate(root,{
   justifyContent : "center",
   alignItems : "center",
   width : "500px",
-  height : "500px",
+  height : "600px",
   borderRadius : "10px",
   boxShadow : "0 10px 20px rgba(0,0,0,0.21), 0 10px 10px rgba(0,0,0,0.22)",
   backgroundColor : "#80EFBD",
   gap : "20px"
 })
 body.appendChild(root);
+
+let digit = tagCreate("div");
 let analog = tagCreate("div");
 let digital = tagCreate("div");
+styleCreate(digit,{
+  display : "flex",
+  justifyContent : "center",
+  alignItems : "center",
+  width : "450px",
+  height : "100px",
+  borderRadius : "10px",
+  boxShadow : "0 10px 20px rgba(0,0,0,0.21), 0 10px 10px rgba(0,0,0,0.22)",
+  backgroundColor : "#ECEFEB",
+  position : "relative",
+  gap : "5px"
+})
 styleCreate(analog,{
   display : "flex",
   flexDirection : "column",
   justifyContent : "center",
   alignItems : "center",
-  width : "400px",
+  width : "450px",
   height : "300px",
   borderRadius : "10px",
   boxShadow : "0 10px 20px rgba(0,0,0,0.21), 0 10px 10px rgba(0,0,0,0.22)",
@@ -52,7 +66,7 @@ styleCreate(digital,{
   flexDirection : "row",
   justifyContent : "center",
   alignItems : "center",
-  width : "400px",
+  width : "450px",
   height : "100px",
   borderRadius : "10px",
   boxShadow : "0 10px 20px rgba(0,0,0,0.21), 0 10px 10px rgba(0,0,0,0.22)",
@@ -61,8 +75,72 @@ styleCreate(digital,{
   fontWeight : "700"
 
 })
+root.appendChild(digit);
 root.appendChild(analog);
 root.appendChild(digital);
+
+
+function makeDigitNum(){
+  let mother = tagCreate("div");
+  styleCreate(mother, {
+    width :"45px",
+    height : "75px",
+    margin : "0px",
+    padding : "0px",
+    display : "flex",
+    justifyContent : "center",
+    alighItems : "center",
+    flexWrap : "wrap"
+  })
+  for(let i = 0 ; i < 15; i++){
+    let children = tagCreate("div");
+    styleCreate(children, {
+      width :"15px",
+      height : "15px",
+      margin : "0px",
+      padding : "0px",
+      border : "1px solid lightgray",
+      boxSizing : "border-box"
+    })
+    mother.appendChild(children);
+  }
+  return mother;
+}
+
+function paint(arr, target){
+  for(let i = 0; i < target.children.length; i++){
+    target.children[i].style.backgroundColor = "transparent";
+  }
+  for(let i = 0; i < arr.length; i++){
+    target.children[arr[i]].style.backgroundColor = "black";
+  }
+}
+let numArr = [[0,1,2,3,5,6,8,9,11,12,13,14],[1,4,7,10,13],[0,1,2,5,6,7,8,9,12,13,14],[0,1,2,5,6,7,8,11,12,13,14],[0,2,3,5,6,7,8,11,14],[0,1,2,3,6,7,8,11,12,13,14],[0,1,2,3,6,7,8,9,11,12,13,14],[0,1,2,5,8,11,14],[0,1,2,3,5,6,7,8,9,11,12,13,14],[0,1,2,3,5,6,7,8,11,12,13,14],[4,10]]
+function digitGenerate(num, target){
+  paint(numArr[num], target)
+}
+
+let hoursFirst = makeDigitNum()
+let hoursSecond = makeDigitNum()
+let minutesFirst = makeDigitNum()
+let minutesSecond = makeDigitNum()
+let secondsFirst = makeDigitNum()
+let secondsSecond = makeDigitNum()
+let borderFirst = makeDigitNum()
+let borderSecond = makeDigitNum()
+
+digit.appendChild(hoursFirst)
+digit.appendChild(hoursSecond)
+digit.appendChild(borderFirst)
+digit.appendChild(minutesFirst)
+digit.appendChild(minutesSecond)
+digit.appendChild(borderSecond)
+digit.appendChild(secondsFirst)
+digit.appendChild(secondsSecond)
+digitGenerate(10,borderFirst)
+digitGenerate(10,borderSecond)
+
+
 setInterval(()=>{
   fetch("http://localhost:3050/time")
     .then((res) => {
@@ -74,6 +152,19 @@ setInterval(()=>{
       rotate(hoursBar, (360 * (analogHours / 12)))
       rotate(minutesBar, (360 * (result.todayMinutes / 60)))
       rotate(secondsBar, (360 * (result.todaySeconds / 60)))
+      
+      let hoursFirstNow = parseInt(result.todayHours/10)
+      let hoursSecondNow = result.todayHours%10
+      let minutesFirstNow = parseInt(result.todayMinutes/10)
+      let minutesSecondNow = result.todayMinutes%10
+      let secondsFirstNow = parseInt(result.todaySeconds/10)
+      let secondsSecondNow = result.todaySeconds%10
+      digitGenerate(hoursFirstNow,hoursFirst);
+      digitGenerate(hoursSecondNow,hoursSecond);
+      digitGenerate(minutesFirstNow,minutesFirst);
+      digitGenerate(minutesSecondNow,minutesSecond);
+      digitGenerate(secondsFirstNow,secondsFirst);
+      digitGenerate(secondsSecondNow,secondsSecond);
     })
 },1000)
 
